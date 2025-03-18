@@ -32,16 +32,17 @@ class Breed(models.Model):
 
 class Cat(models.Model):
     """Model representing a cat."""
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200,
+                             help_text='Made up nickname for the cat when we do not know its actual name')
 
-    description = models.TextField(
-        max_length=1000, help_text="Enter a brief description of the cat")
-    nickname = models.CharField('Nickname', max_length=150,
-                            unique=False,
-                            help_text='Made up nickname for the cat when we do not know its actual name')
+    description = models.TextField(max_length=1000, 
+                                   help_text="Enter a brief description of the cat")
 
+   
     # Foreign Key used because a cat can only have one breed, but breeds can have multiple cats.
-    breed = models.ForeignKey('Breed', on_delete=models.RESTRICT, null=True)
+    breed = models.ForeignKey('Breed', 
+                              on_delete=models.RESTRICT, 
+                              null=True)
 
     def __str__(self):
         """String for representing the Model object."""
@@ -50,3 +51,20 @@ class Cat(models.Model):
     def get_absolute_url(self):
         """Returns the URL to access a detail record for this cat."""
         return reverse('cat-detail', args=[str(self.id)])
+    
+    
+class Picture(models.Model):
+    title = models.CharField(max_length=200,
+                             null=True)
+
+    description = models.TextField(
+        max_length=1000, help_text="Enter a brief description of the image")
+    
+    image = models.ImageField(upload_to='cat_images')
+    
+    # Foreign Key used because a picture can only be of one cat, but cats can have multiple pictures.
+    cat = models.ForeignKey('Cat', on_delete=models.RESTRICT, null=True)
+    
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.title
